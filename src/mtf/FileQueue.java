@@ -9,6 +9,7 @@ import java.util.List;
  * Implements bulk processing, block size is hard-coded.
  */
 public class FileQueue {
+    public static final int TIMEOUT = 100;
     public static final int FILE_BLOCK_SIZE = 10;
 
     private final LinkedList/*<List<File>>*/ queue = new LinkedList();
@@ -30,7 +31,7 @@ public class FileQueue {
     public synchronized List/*<File>*/ getFilesAndWait() {
         while (queue.isEmpty() && !noMoreFiles) {
             try {
-                wait();
+                wait(TIMEOUT);
             } catch (InterruptedException e) {
                 System.out.println("Thread " + Thread.currentThread().getName() + " interrupted: " + e);
             }
