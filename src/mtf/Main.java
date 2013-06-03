@@ -18,7 +18,7 @@ public class Main {
         return s.getBytes();
     }
 
-    public static final int CONSUMERS_COUNT = 4;
+    public static final int WORKER_COUNT = 4;
     
     public static void main(String[] args) {
         byte[] pattern = stringToBytes("apple");
@@ -28,19 +28,19 @@ public class Main {
         
         FileProducer producer = new FileProducer(queue);
         
-        Thread[] consumers = new Thread[CONSUMERS_COUNT];
-        for (int i = 0; i < CONSUMERS_COUNT; i++) {
-            SearchWorker consumer = new SearchWorker(queue, accumulator, pattern);
-            Thread t = new Thread(consumer, "Consumer" + i);
-            consumers[i] = t;
+        Thread[] workers = new Thread[WORKER_COUNT];
+        for (int i = 0; i < WORKER_COUNT; i++) {
+            SearchWorker w = new SearchWorker(queue, accumulator, pattern);
+            Thread t = new Thread(w, "Worker" + i);
+            workers[i] = t;
             t.start();
         }
 
         producer.searchDirectory(ROOT_DIRECTORY);
         queue.finishProcessing();
-        for (int i = 0; i < CONSUMERS_COUNT; i++)
+        for (int i = 0; i < WORKER_COUNT; i++)
             try {
-                consumers[i].join();
+                workers[i].join();
             } catch (InterruptedException e) {
                 System.out.println("Thread " + Thread.currentThread().getName() + " interrupted: " + e);
             }
