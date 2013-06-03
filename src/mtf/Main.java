@@ -18,8 +18,43 @@ public class Main {
         return s.getBytes();
     }
 
+    public static final int CONSUMERS_COUNT = 4;
+    
     public static void main(String[] args) {
-        testSearchDirectory();
+        byte[] pattern = stringToBytes("apple");
+
+        FileQueue queue = new FileQueue();
+        ResultAccumulator accumulator = new ResultAccumulator();
+        
+        FileProducer producer = new FileProducer(queue);
+        
+        Thread[] consumers = new Thread[CONSUMERS_COUNT];
+        for (int i = 0; i < CONSUMERS_COUNT; i++) {
+            SearchConsumer consumer = new SearchConsumer(queue, accumulator, pattern);
+            Thread t = new Thread(consumer, "Consumer" + i);
+            consumers[i] = t;
+            t.start();
+        }
+
+        producer.searchDirectory(ROOT_DIRECTORY);
+        queue.finishProcessing();
+        for (int i = 0; i < CONSUMERS_COUNT; i++)
+            try {
+                consumers[i].join();
+            } catch (InterruptedException e) {
+                System.out.println("Thread " + Thread.currentThread().getName() + " interrupted: " + e);
+            }
+
+        List res = accumulator.getResults();
+        if (res.size() == 0) {
+            System.out.println("Pattern not found in " + ROOT_DIRECTORY + ".");
+        } else {
+            System.out.println("Pattern found in the following " + res.size() + " files:");
+            for (int i = 0; i < res.size(); i++) {
+                File f = (File) res.get(i);
+                System.out.println(f.getPath());
+            }
+        }
     }
 
     public static void testSearchPatternInBlock() {
@@ -31,7 +66,7 @@ public class Main {
         System.out.println("Result = " + blockSearch.search(text, text.length));
     }
 
-    private static final String ROOT_DIRECTORY = "/Users/alexey/Downloads";
+    private static final String ROOT_DIRECTORY = "/Users/aselivanov/Downloads";
 
     public static void testSearchDirectory() {
         byte[] pattern = stringToBytes("apple");
@@ -55,7 +90,7 @@ public class Main {
         if (res.size() == 0) {
             System.out.println("Pattern not found in " + ROOT_DIRECTORY + ".");
         } else {
-            System.out.println("Pattern found in the following files:");
+            System.out.println("Pattern found in the following " + res.size() + " files:");
             for (int i = 0; i < res.size(); i++) {
                 File f = (File) res.get(i);
                 System.out.println(f.getPath());

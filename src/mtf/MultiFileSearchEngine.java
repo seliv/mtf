@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a single thread of concurrent search processing.
- * Takes a list of files and processes them sequentially.
+ * Encapsulates the logic for searching the pattern in a list of files (not bothering of multi-threading issues).
  */
 public class MultiFileSearchEngine {
     private static final int CHUNK_SIZE = 1024 * 1024;
@@ -31,7 +30,7 @@ public class MultiFileSearchEngine {
         List res = new ArrayList();
         for (int i = 0; i < files.size(); i++) {
             File f = (File) files.get(i);
-            System.out.println("Processing " + f.getPath());
+            System.out.println("[" + Thread.currentThread().getName() + "] Processing " + f.getPath());
             try {
                 if (searchFile(f)) {
                     res.add(f);
