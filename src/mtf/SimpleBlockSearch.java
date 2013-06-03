@@ -16,11 +16,13 @@ public class SimpleBlockSearch {
         this.pattern = pattern;
     }
 
-    public boolean search(byte[] block) {
+    public boolean search(byte[] block, int len) {
         if (pattern == null)
             throw new IllegalStateException("Search pattern is not initialized");
+        if (len > block.length)
+            throw new IllegalArgumentException("Given block length is larger than actual block size");
         outer:
-        for (int i = 0; i <= block.length - pattern.length; i++) {
+        for (int i = 0; i <= len - pattern.length; i++) {
             for (int j = 0; j < pattern.length; j++) {
                 if (block[i + j] != pattern[j])
                     continue outer;
