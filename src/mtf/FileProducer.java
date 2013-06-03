@@ -19,6 +19,7 @@ public class FileProducer {
             System.out.println(root + " is not a directory");
             System.exit(1);
         }
+        System.out.println("Searching in directory: " + root);
         ArrayList files = new ArrayList();
         File[] allFiles = file.listFiles();
         for (int i = 0; i < allFiles.length; i++) {

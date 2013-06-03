@@ -12,35 +12,34 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class Main {
-    public static final int WORKER_COUNT = 4;
-    
     public static void main(String[] args) {
         try {
             Config config = parseArguments(args);
-            doConcurrentSearch(config.getPattern());
+            doConcurrentSearch(config);
         } catch (IllegalArgumentException ex) {
             System.err.println(ex);
             System.exit(1);
         }
     }
 
-    public static void doConcurrentSearch(byte[] pattern) {
+    public static void doConcurrentSearch(Config config) {
         FileQueue queue = new FileQueue();
         ResultAccumulator accumulator = new ResultAccumulator();
-
         FileProducer producer = new FileProducer(queue);
 
-        Thread[] workers = new Thread[WORKER_COUNT];
-        for (int i = 0; i < WORKER_COUNT; i++) {
-            SearchWorker w = new SearchWorker(queue, accumulator, pattern);
+        int workerCount = config.getThreads();
+
+        Thread[] workers = new Thread[workerCount];
+        for (int i = 0; i < workerCount; i++) {
+            SearchWorker w = new SearchWorker(queue, accumulator, config.getPattern());
             Thread t = new Thread(w, "Worker" + i);
             workers[i] = t;
             t.start();
         }
 
-        producer.searchDirectory(ROOT_DIRECTORY);
+        producer.searchDirectory(config.getRootDirectory());
         queue.finishProcessing();
-        for (int i = 0; i < WORKER_COUNT; i++)
+        for (int i = 0; i < workerCount; i++)
             try {
                 workers[i].join();
             } catch (InterruptedException e) {
@@ -86,7 +85,7 @@ public class Main {
 
     private static void showSearchResults(List res) {
         if (res.size() == 0) {
-            System.out.println("Pattern not found in " + ROOT_DIRECTORY + ".");
+            System.out.println("Pattern not found.");
         } else {
             System.out.println("Pattern found in the following " + res.size() + " files:");
             for (int i = 0; i < res.size(); i++) {
