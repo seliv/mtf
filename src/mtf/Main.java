@@ -23,11 +23,15 @@ public class Main {
     public static void main(String[] args) {
         byte[] pattern = stringToBytes("apple");
 
+        doConcurrentSearch(pattern);
+    }
+
+    public static void doConcurrentSearch(byte[] pattern) {
         FileQueue queue = new FileQueue();
         ResultAccumulator accumulator = new ResultAccumulator();
-        
+
         FileProducer producer = new FileProducer(queue);
-        
+
         Thread[] workers = new Thread[WORKER_COUNT];
         for (int i = 0; i < WORKER_COUNT; i++) {
             SearchWorker w = new SearchWorker(queue, accumulator, pattern);
@@ -46,15 +50,7 @@ public class Main {
             }
 
         List res = accumulator.getResults();
-        if (res.size() == 0) {
-            System.out.println("Pattern not found in " + ROOT_DIRECTORY + ".");
-        } else {
-            System.out.println("Pattern found in the following " + res.size() + " files:");
-            for (int i = 0; i < res.size(); i++) {
-                File f = (File) res.get(i);
-                System.out.println(f.getPath());
-            }
-        }
+        showSearchResults(res);
     }
 
     public static void testSearchPatternInBlock() {
@@ -87,6 +83,10 @@ public class Main {
 
         MultiFileSearchEngine worker = new MultiFileSearchEngine(pattern);
         List res = worker.searchFiles(files);
+        showSearchResults(res);
+    }
+
+    private static void showSearchResults(List res) {
         if (res.size() == 0) {
             System.out.println("Pattern not found in " + ROOT_DIRECTORY + ".");
         } else {
