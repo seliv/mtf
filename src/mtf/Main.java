@@ -12,18 +12,16 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class Main {
-    private static byte[] stringToBytes(String s) {
-        if (s == null)
-            throw new IllegalArgumentException("Can't convert null string to bytes");
-        return s.getBytes();
-    }
-
     public static final int WORKER_COUNT = 4;
     
     public static void main(String[] args) {
-        byte[] pattern = stringToBytes("apple");
-
-        doConcurrentSearch(pattern);
+        try {
+            Config config = parseArguments(args);
+            doConcurrentSearch(config.getPattern());
+        } catch (IllegalArgumentException ex) {
+            System.err.println(ex);
+            System.exit(1);
+        }
     }
 
     public static void doConcurrentSearch(byte[] pattern) {
@@ -54,8 +52,8 @@ public class Main {
     }
 
     public static void testSearchPatternInBlock() {
-        byte[] text = stringToBytes("Is there anybody going to listen to my story");
-        byte[] sub = stringToBytes("any");
+        byte[] text = "Is there anybody going to listen to my story".getBytes();
+        byte[] sub = "any".getBytes();
 
         SimpleBlockSearch blockSearch = new SimpleBlockSearch();
         blockSearch.setPattern(sub);
@@ -65,7 +63,7 @@ public class Main {
     private static final String ROOT_DIRECTORY = "/Users/aselivanov/Downloads";
 
     public static void testSearchDirectory() {
-        byte[] pattern = stringToBytes("apple");
+        byte[] pattern = "apple".getBytes();
 
         File file = new File(ROOT_DIRECTORY);
         if (!file.isDirectory()) {
@@ -96,5 +94,58 @@ public class Main {
                 System.out.println(f.getPath());
             }
         }
+    }
+
+    private static Config parseArguments(String[] args) {
+        Config config = new Config();
+        int i = 0;
+        while (i < args.length) {
+            if (args[i].contains("root")) {
+                if (i + 1 < args.length) {
+                    config.setRootDirectory(args[i + 1]);
+                } else {
+                    throw new IllegalArgumentException("No value provided for -root option.");
+                }
+                i += 2;
+                continue;
+            }
+            if (args[i].contains("string")) {
+                if (i + 1 < args.length) {
+                    config.setStringPattern(args[i + 1]);
+                } else {
+                    throw new IllegalArgumentException("No value provided for -string option.");
+                }
+                i += 2;
+                continue;
+            }
+            if (args[i].contains("hex")) {
+                if (i + 1 < args.length) {
+                    config.setHexPattern(args[i + 1]);
+                } else {
+                    throw new IllegalArgumentException("No value provided for -hex option.");
+                }
+                i += 2;
+                continue;
+            }
+            if (args[i].contains("threads")) {
+                if (i + 1 < args.length) {
+                    try {
+                        config.setThreads(Integer.parseInt(args[i + 1]));
+                    } catch (NumberFormatException ex) {
+                        throw new IllegalArgumentException(ex.getMessage());
+                    }
+                } else {
+                    throw new IllegalArgumentException("No value provided for -threads option.");
+                }
+                i += 2;
+                continue;
+            }
+            if (args[i].contains("debug")) {
+                config.setLogEnabled(true);
+                i++;
+            }
+        }
+        config.validate();
+        return config;
     }
 }
