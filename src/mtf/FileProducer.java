@@ -30,7 +30,7 @@ public class FileProducer {
 
         for (int i = 0; i < files.size(); i += FileQueue.FILE_BLOCK_SIZE) {
             ArrayList/*<File>*/ chunk = new ArrayList();
-            for (int j = 0; j <= FileQueue.FILE_BLOCK_SIZE; j++) {
+            for (int j = 0; j < FileQueue.FILE_BLOCK_SIZE; j++) {
                 if ((i + j) < files.size()) {
                     chunk.add(files.get(i + j));
                 }
