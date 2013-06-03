@@ -18,7 +18,7 @@ public class ResultAccumulator {
 
     public List/*<File>*/ getResults() {
         synchronized (results) {
-            return results;
+            return new ArrayList(results);
         }
     }
 }
