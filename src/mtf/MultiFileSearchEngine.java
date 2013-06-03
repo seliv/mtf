@@ -8,7 +8,7 @@ import java.util.List;
  * Represents a single thread of concurrent search processing.
  * Takes a list of files and processes them sequentially.
  */
-public class SearchWorker {
+public class MultiFileSearchEngine {
     private static final int CHUNK_SIZE = 1024 * 1024;
     private final int patternLength;
     private byte[] buffer = new byte[CHUNK_SIZE];
@@ -20,7 +20,7 @@ public class SearchWorker {
 
     private final SimpleBlockSearch blockSearch;
 
-    public SearchWorker(byte[] pattern) {
+    public MultiFileSearchEngine(byte[] pattern) {
         patternLength = pattern.length;
         blockSearch = new SimpleBlockSearch();
         blockSearch.setPattern(pattern);

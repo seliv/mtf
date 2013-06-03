@@ -50,7 +50,7 @@ public class Main {
         }
         System.out.println("Total files to process: " + files.size());
 
-        SearchWorker worker = new SearchWorker(pattern);
+        MultiFileSearchEngine worker = new MultiFileSearchEngine(pattern);
         List res = worker.searchFiles(files);
         if (res.size() == 0) {
             System.out.println("Pattern not found in " + ROOT_DIRECTORY + ".");
