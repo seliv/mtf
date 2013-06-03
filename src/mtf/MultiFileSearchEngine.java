@@ -30,7 +30,8 @@ public class MultiFileSearchEngine {
         List res = new ArrayList();
         for (int i = 0; i < files.size(); i++) {
             File f = (File) files.get(i);
-            System.out.println("[" + Thread.currentThread().getName() + "] Processing " + f.getPath());
+            String bar = getFileBarString(f);
+            System.out.println("[" + Thread.currentThread().getName() + "] [" + bar + "] Processing " + f.getPath());
             try {
                 if (searchFile(f)) {
                     res.add(f);
@@ -40,6 +41,16 @@ public class MultiFileSearchEngine {
             }
         }
         return res;
+    }
+
+    private static final String FULL_BAR = "------~~~~~~====xxxxXXXXXX";
+
+    private String getFileBarString(File f) {
+        int size = String.valueOf(f.length()).length(); // Number of digits in file size
+        String bar = FULL_BAR.substring(0, Math.min(size * 2, FULL_BAR.length()));
+        while (bar.length() < FULL_BAR.length())
+            bar += " ";
+        return bar;
     }
 
     /**
