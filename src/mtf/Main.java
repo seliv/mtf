@@ -30,7 +30,7 @@ public class Main {
         
         Thread[] consumers = new Thread[CONSUMERS_COUNT];
         for (int i = 0; i < CONSUMERS_COUNT; i++) {
-            SearchConsumer consumer = new SearchConsumer(queue, accumulator, pattern);
+            SearchWorker consumer = new SearchWorker(queue, accumulator, pattern);
             Thread t = new Thread(consumer, "Consumer" + i);
             consumers[i] = t;
             t.start();
