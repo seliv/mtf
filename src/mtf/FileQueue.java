@@ -1,5 +1,6 @@
 package mtf;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,13 +32,24 @@ public class FileQueue {
     }
 
     /**
-     * Atomic "check if not empty" and "get".
-     * @return List&lt;File&gt; or <code>null</code> if the queue is empty.
+     * The method blocks to wait for a new List&lt;File&gt; to process.
+     * @return List&lt;File&gt; to process (possibly an empty one) or <code>null</code> if there are no more files to process.
      */
-    public synchronized List/*<File>*/ getFilesIfExist() {
-        if (queue.isEmpty())
-            return null;
-        else
+    public synchronized List/*<File>*/ getFilesAndWait() {
+        while (queue.isEmpty() && !noMoreFiles) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                System.out.println("Thread " + Thread.currentThread().getName() + " interrupted: " + e);
+            }
+        }
+        if (!queue.isEmpty())
             return (List) queue.removeFirst();
+        else {
+            if (noMoreFiles)
+                return null;
+            else
+                return Collections.EMPTY_LIST;
+        }
     }
 }

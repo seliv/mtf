@@ -18,19 +18,8 @@ public class SearchConsumer implements Runnable {
     }
 
     public void run() {
-        while (queue.hasMoreFiles()) {
-            List files;
-            while ((files = queue.getFilesIfExist()) == null) {
-                if (!queue.hasMoreFiles())
-                    return;
-                try {
-                    synchronized (queue) {
-                        queue.wait();
-                    }
-                } catch (InterruptedException e) {
-                    System.out.println("Thread " + Thread.currentThread().getName() + " interrupted: " + e);
-                }
-            }
+        List files;
+        while ((files = queue.getFilesAndWait()) != null) {
             List res = engine.searchFiles(files);
             accumulator.addResults(res);
         }
