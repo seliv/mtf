@@ -28,21 +28,15 @@ public class FileQueue {
      * The method blocks to wait for a new List&lt;File&gt; to process.
      * @return List&lt;File&gt; to process (possibly an empty one) or <code>null</code> if there are no more files to process.
      */
-    public synchronized List/*<File>*/ getFilesAndWait() {
-        while (queue.isEmpty() && !noMoreFiles) {
-            try {
+    public synchronized List/*<File>*/ getFilesAndWait() throws InterruptedException {
+        while (true) {
+            while (queue.isEmpty() && !noMoreFiles) {
                 wait(TIMEOUT);
-            } catch (InterruptedException e) {
-                System.out.println("Thread " + Thread.currentThread().getName() + " interrupted: " + e);
             }
-        }
-        if (!queue.isEmpty())
-            return (List) queue.removeFirst();
-        else {
+            if (!queue.isEmpty())
+                return (List) queue.removeFirst();
             if (noMoreFiles)
                 return null;
-            else
-                return Collections.EMPTY_LIST;
         }
     }
 }

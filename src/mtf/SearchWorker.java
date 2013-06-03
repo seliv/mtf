@@ -19,9 +19,14 @@ public class SearchWorker implements Runnable {
 
     public void run() {
         List files;
-        while ((files = queue.getFilesAndWait()) != null) {
-            List res = engine.searchFiles(files);
-            accumulator.addResults(res);
+        try {
+            while ((files = queue.getFilesAndWait()) != null) {
+                System.out.println();
+                List res = engine.searchFiles(files);
+                accumulator.addResults(res);
+            }
+        } catch (InterruptedException e) {
+            System.out.println("Thread " + Thread.currentThread().getName() + " interrupted: " + e);
         }
     }
 }
