@@ -4,6 +4,9 @@ package mtf;
  * Contains parameters provided as command line arguments.
  */
 public class Config {
+    private static final int DEFAULT_THREAD_COUNT = 4;
+    private static final String DEFAULT_DIRECTORY = ".";
+
     private byte[] pattern;
     private boolean logEnabled = false;
     private String rootDirectory;
@@ -33,11 +36,11 @@ public class Config {
             throw new IllegalArgumentException("Search pattern is empty.");
         if ((rootDirectory == null) || (rootDirectory.length() == 0)) {
             System.err.println("No root directory provided; using current directory as a root");
-            rootDirectory = ".";
+            rootDirectory = DEFAULT_DIRECTORY;
         }
         if (threads == 0) {
             System.err.println("No thread count specified; using default value: 4");
-            threads = 4;
+            threads = DEFAULT_THREAD_COUNT;
         }
     }
 
