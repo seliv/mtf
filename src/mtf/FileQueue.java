@@ -23,14 +23,6 @@ public class FileQueue {
         noMoreFiles = true;
     }
 
-    public synchronized boolean hasMoreFiles() {
-        return !(queue.isEmpty() && noMoreFiles);
-    }
-
-    public synchronized boolean isEmpty() {
-        return queue.isEmpty();
-    }
-
     /**
      * The method blocks to wait for a new List&lt;File&gt; to process.
      * @return List&lt;File&gt; to process (possibly an empty one) or <code>null</code> if there are no more files to process.
