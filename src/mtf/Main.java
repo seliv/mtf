@@ -29,6 +29,8 @@ public class Main {
 
         int workerCount = config.getThreads();
 
+        long startTime = System.currentTimeMillis();
+
         Thread[] workers = new Thread[workerCount];
         for (int i = 0; i < workerCount; i++) {
             SearchWorker w = new SearchWorker(queue, accumulator, config.getPattern());
@@ -46,8 +48,13 @@ public class Main {
                 System.out.println("Thread " + Thread.currentThread().getName() + " interrupted: " + e);
             }
 
+        long stopTime = System.currentTimeMillis();
+        long timeDiff = stopTime - startTime;
+
         List res = accumulator.getResults();
         showSearchResults(res);
+
+        System.out.println("Processing time: " + (timeDiff / 1000) + "." + timeDiff % 1000 + " seconds.");
     }
 
     public static void testSearchPatternInBlock() {
