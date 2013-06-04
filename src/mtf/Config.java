@@ -8,7 +8,7 @@ public class Config {
     private static final String DEFAULT_DIRECTORY = ".";
 
     private byte[] pattern;
-    private boolean logEnabled = false;
+    private boolean logEnabled = true;
     private String rootDirectory;
     private int threads;
 

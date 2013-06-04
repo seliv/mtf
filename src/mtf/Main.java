@@ -150,8 +150,13 @@ public class Main {
                 i += 2;
                 continue;
             }
-            if (args[i].contains("debug")) {
-                config.setLogEnabled(true);
+            if (args[i].contains("nolog")) {
+                config.setLogEnabled(false);
+                i++;
+                continue;
+            }
+            if (args[i].contains("nodebug")) {
+                config.setLogEnabled(false);
                 i++;
             }
         }
