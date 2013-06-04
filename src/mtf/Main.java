@@ -107,6 +107,18 @@ public class Main {
     }
 
     private static Config parseArguments(String[] args) {
+        if (args.length == 0) {
+            System.err.println("Command line options:");
+            System.err.println("    -root - root directory to start search from (current directory by default)");
+            System.err.println("    -string - text to search");
+            System.err.println("    -hex - hexadecimal sequence of bytes to search");
+            System.err.println("    -threads - number of finder threads to use (4 by default)");
+            System.err.println("    -nolog - hide verbose output (only shows total files to process and time elapsed, useful for benchmarking)");
+            System.err.println("    -nodebug - same as -nolog");
+            System.err.println();
+            System.err.println("Either -string or -hex must be specified.");
+            System.exit(-1);
+        }
         Config config = new Config();
         int i = 0;
         while (i < args.length) {
@@ -158,7 +170,9 @@ public class Main {
             if (args[i].contains("nodebug")) {
                 config.setLogEnabled(false);
                 i++;
+                continue;
             }
+            throw new IllegalArgumentException("Unknown option: " + args[i]);
         }
         config.validate();
         return config;

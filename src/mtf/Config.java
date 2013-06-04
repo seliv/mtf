@@ -39,7 +39,7 @@ public class Config {
             rootDirectory = DEFAULT_DIRECTORY;
         }
         if (threads == 0) {
-            System.err.println("No thread count specified; using default value: 4");
+            System.err.println("No thread count specified; using default value: " + DEFAULT_THREAD_COUNT);
             threads = DEFAULT_THREAD_COUNT;
         }
     }
