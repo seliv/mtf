@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class FileQueue {
     public static final int TIMEOUT = 100;
-    public static final int FILE_BLOCK_SIZE = 10;
+    public static final int FILE_BLOCK_SIZE = 1;
 
     private final LinkedList/*<List<File>>*/ queue = new LinkedList();
     private boolean noMoreFiles = false;
