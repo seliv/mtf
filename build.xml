@@ -1,0 +1,28 @@
+<project name="db-mtf" default="deliver" basedir="." >
+    <property name="srcdir" location="./src"/>
+    <property name="builddir" location="./build"/>
+    <property name="deliverydir" location="./delivery"/>
+    <property name="deliveryfile" location="./delivery/mtf.jar"/>
+
+    <target name="clean">
+        <delete dir="${builddir}" />
+        <delete dir="${deliverydir}" />
+    </target>
+
+    <target name="init">
+        <mkdir dir="${builddir}" />
+        <mkdir dir="${deliverydir}" />
+    </target>
+
+    <target name="compile" depends="init" >
+        <javac debug="on" target="1.4" source="1.4" srcdir="${srcdir}" destdir="${builddir}" />
+    </target>
+
+    <target name="deliver" depends="compile" >
+        <jar destfile="${deliveryfile}" basedir="${builddir}">
+            <manifest>
+                <attribute name="Main-Class" value="mtf.Main"/>
+            </manifest>
+        </jar>
+    </target>
+</project>
