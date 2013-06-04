@@ -16,22 +16,26 @@ public class MultiFileSearchEngine {
      * Implemented as a separate variable for clarity, can be combined with file reading buffer.
      */
     private byte[] paddedBuffer;
+    private boolean logEnabled;
 
     private final SimpleBlockSearch blockSearch;
 
-    public MultiFileSearchEngine(byte[] pattern) {
-        patternLength = pattern.length;
+    public MultiFileSearchEngine(Config config) {
+        patternLength = config.getPattern().length;
         blockSearch = new SimpleBlockSearch();
-        blockSearch.setPattern(pattern);
+        blockSearch.setPattern(config.getPattern());
         paddedBuffer = new byte[CHUNK_SIZE + patternLength];
+        logEnabled = config.isLogEnabled();
     }
 
     public List searchFiles(List files) {
         List res = new ArrayList();
         for (int i = 0; i < files.size(); i++) {
             File f = (File) files.get(i);
-            String bar = getFileBarString(f);
-            System.out.println("[" + Thread.currentThread().getName() + "] [" + bar + "] Processing " + f.getPath());
+            if (logEnabled) {
+                String bar = getFileBarString(f);
+                System.out.println("[" + Thread.currentThread().getName() + "] [" + bar + "] Processing " + f.getPath());
+            }
             try {
                 if (searchFile(f)) {
                     res.add(f);

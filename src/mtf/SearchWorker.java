@@ -11,10 +11,10 @@ public class SearchWorker implements Runnable {
     private final ResultAccumulator accumulator;
     private final MultiFileSearchEngine engine;
 
-    public SearchWorker(FileQueue queue, ResultAccumulator accumulator, byte[] pattern) {
+    public SearchWorker(FileQueue queue, ResultAccumulator accumulator, Config config) {
         this.queue = queue;
         this.accumulator = accumulator;
-        engine = new MultiFileSearchEngine(pattern);
+        engine = new MultiFileSearchEngine(config);
     }
 
     public void run() {

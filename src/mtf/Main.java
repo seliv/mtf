@@ -33,7 +33,7 @@ public class Main {
 
         Thread[] workers = new Thread[workerCount];
         for (int i = 0; i < workerCount; i++) {
-            SearchWorker w = new SearchWorker(queue, accumulator, config.getPattern());
+            SearchWorker w = new SearchWorker(queue, accumulator, config);
             Thread t = new Thread(w, "Worker" + i);
             workers[i] = t;
             t.start();
@@ -51,8 +51,10 @@ public class Main {
         long stopTime = System.currentTimeMillis();
         long timeDiff = stopTime - startTime;
 
-        List res = accumulator.getResults();
-        showSearchResults(res);
+        if (config.isLogEnabled()) {
+            List res = accumulator.getResults();
+            showSearchResults(res);
+        }
 
         System.out.println("Processing time: " + (timeDiff / 1000) + "." + timeDiff % 1000 + " seconds.");
     }
@@ -69,8 +71,6 @@ public class Main {
     private static final String ROOT_DIRECTORY = "/Users/aselivanov/Downloads";
 
     public static void testSearchDirectory() {
-        byte[] pattern = "apple".getBytes();
-
         File file = new File(ROOT_DIRECTORY);
         if (!file.isDirectory()) {
             System.out.println(ROOT_DIRECTORY + " is not a directory");
@@ -85,7 +85,11 @@ public class Main {
         }
         System.out.println("Total files to process: " + files.size());
 
-        MultiFileSearchEngine worker = new MultiFileSearchEngine(pattern);
+        Config config = new Config();
+        config.setStringPattern("apple");
+        config.setLogEnabled(true);
+
+        MultiFileSearchEngine worker = new MultiFileSearchEngine(config);
         List res = worker.searchFiles(files);
         showSearchResults(res);
     }
