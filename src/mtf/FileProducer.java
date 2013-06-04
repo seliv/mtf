@@ -21,12 +21,7 @@ public class FileProducer {
         }
         System.out.println("Searching in directory: " + root);
         ArrayList files = new ArrayList();
-        File[] allFiles = file.listFiles();
-        for (int i = 0; i < allFiles.length; i++) {
-            File f = allFiles[i];
-            if (!f.isDirectory())
-                files.add(f);
-        }
+        addDirectoryContent(file, files);
         System.out.println("Total files to process: " + files.size());
 
         for (int i = 0; i < files.size(); i += FileQueue.FILE_BLOCK_SIZE) {
@@ -37,6 +32,18 @@ public class FileProducer {
                 }
             }
             queue.putFiles(chunk);
+        }
+    }
+
+    private void addDirectoryContent(File dir, ArrayList files) {
+        File[] allFiles = dir.listFiles();
+        for (int i = 0; i < allFiles.length; i++) {
+            File f = allFiles[i];
+            if (f.isDirectory()) {
+                addDirectoryContent(f, files);
+            } else {
+                files.add(f);
+            }
         }
     }
 }
