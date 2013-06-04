@@ -21,7 +21,6 @@ public class SearchWorker implements Runnable {
         List files;
         try {
             while ((files = queue.getFilesAndWait()) != null) {
-                System.out.println();
                 List res = engine.searchFiles(files);
                 accumulator.addResults(res);
             }
